@@ -1,0 +1,161 @@
+##############################################################
+## MOD Title: Smileymaker
+## MOD Author: Crock <alexander.surma@gmx.de> http://www.crocks-level.de http://crock.servequake.com
+## MOD Description: This MOD will allow Users to create via BBCode their
+##                  own Smileys.
+## MOD Version: 0.8
+##
+## Installation Level: medium
+## Installation Time:  about 8 Minutes
+## Files To Edit: 
+##   includes/bbcode.php
+##   templates/<your_template>/posting_body.tpl
+##   language/<your_language>/lang_main.php
+##   posting.php
+##############################################################
+## Author Notes:
+## I'm sorry, that this Tool isn't programmed very professional.
+## It was created while boredom, and I think, it do its job.
+##############################################################
+## This MOD is released under the GPL License.
+## Intellectual Property is retained by the MOD Author(s) listed above
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+##
+## If you have ANY problems with installing the hack,
+## or does it not work, pleas write alexader.surma@gmx.de
+## or write PM to "Crock" on phpBBHacks.com
+##
+
+
+#
+#-----[ COPY ]------------------------------------------------
+#
+
+smileygenerator_f/*.* to <phpBB-Root>/*.*
+
+#
+#DANGER: Do not change foldername! The script (at this time) is with absolute paths. Sorry!
+#
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+includes/bbcode.php
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+        // [img]image_url_here[/img] code..
+        // This one gets first-passed..
+
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+        // [smiley poster=name][smiley] ||hack
+        $patterns[] = "#\[smiley poster=([a-z0-9\.\-\_]+)\:$uid](.*?)\[/smiley:$uid]#si" ;
+         $replacements[] = "<img src=\"./smileygenerator/smileygenerator.php?smiley=\\1&text=\\2\">" ;
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+	// [img]image_url_here[/img] code..
+
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+        // [smiley poster=name][smiley] ||hack
+        $text = preg_replace("#\[smiley poster=([a-z0-9\.\-\_]+)\](.*?)\[/smiley\]#si", "[smiley poster=\\1:$uid]\\2[/smiley:$uid]", $text) ;
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+	$text = preg_replace("#\[img\]((ht|f)tp://)([^ \?&=\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\]#sie", "'[img:$uid]\\1' . str_replace(' ', '%20', '\\3') . '[/img:$uid]'", $text);
+
+#
+#-----[ REPLACE ]---------------------------------------------
+#
+	$text = preg_replace("#\[img\]((ht|f)tp://)([^ \?&=\"\n\r\t<]*?(\.(jpg|jpeg|gif|png|php)))\[/img\]#sie", "'[img:$uid]\\1' . str_replace(' ', '%20', '\\3') . '[/img:$uid]'", $text);
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+language/<your_language>/lang_main.php
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+//
+// That's all Folks!
+// -------------------------------------------------
+
+
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+
+  $lang['Own_Smiley'] = 'Eigener Smiley' ;
+  // OR IN ENGLISH
+  $lang['Own_Smiley'] = 'Own Smiley' ;
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+posting.php
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+$template->assign_vars(array(
+	'FORUM_NAME' => $forum_name,
+	'L_POST_A' => $page_title,
+	'L_POST_SUBJECT' => $lang['Post_subject'], 
+
+#
+#-----[ AFTER, ADD ]-----------------------------------------
+#
+	'OWN_SMILEY' => $lang['Own_Smiley'],
+
+
+#
+#-----[ OPEN ]------------------------------------------------
+#
+templates/<your_template>/posting_body.tpl
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+<!-- BEGIN privmsg_extensions -->
+
+#
+#-----[ BEFORE, ADD ]-----------------------------------------
+#
+<!-- Smileyhack //-->
+<script language="JavaScript" type="text/javascript">
+<!--
+  //Opens a new window with smileys and adds the BBCode into Textarea
+  function own_smiley()
+  {
+    window.open ("./showsmileys.php", "SmileyWindow", "dependent=yes, Width=400, Height=460, location=no, menubar=no, scrollbars=yes, status=no, toolbar=no") ;
+  }
+//-->
+</script>
+<!-- End Smileyhack //-->
+
+#
+#-----[ FIND ]------------------------------------------------
+#
+class="nav">{L_MORE_SMILIES}</a>
+
+#
+#-----[ AFTER, ADD ]-----------------------------------------
+#
+<br><br><a href="javascript:own_smiley()">{OWN_SMILEY}</a>
+
+#
+#-----[ SAVE/CLOSE ALL FILES ]------------------------------------------
+#
+# EoM
+
+
